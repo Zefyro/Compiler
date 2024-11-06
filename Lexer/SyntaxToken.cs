@@ -1,17 +1,10 @@
 ﻿namespace Lexer;
-public sealed class SyntaxToken : SyntaxNode
+public sealed class SyntaxToken(SyntaxKind kind, int position, string? text, object? value) : SyntaxNode
 {
-    public override SyntaxKind Kind { get; }
-    public int Position { get; }
-    public string? Text { get; }
-    public object? Value { get; }
-    public SyntaxToken(SyntaxKind kind, int position, string? text, object? value)
-    {
-        Kind = kind;
-        Position = position;
-        Text = text;
-        Value = value;
-    }
+    public override SyntaxKind Kind { get; } = kind;
+    public int Position { get; } = position;
+    public string? Text { get; } = text;
+    public object? Value { get; } = value;
 	public override IEnumerable<SyntaxNode> GetChildren()
 	{
 		return Enumerable.Empty<SyntaxNode>();

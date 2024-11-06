@@ -22,7 +22,7 @@ public sealed class Parser
             }
 
         } while (token.Kind is not SyntaxKind.EndOfFileToken);
-        _tokens = tokens.ToArray();
+        _tokens = [.. tokens];
     }
     private SyntaxToken Peek(int offset)
     {

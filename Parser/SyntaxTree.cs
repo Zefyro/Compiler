@@ -1,16 +1,11 @@
-﻿using Lexer;
+﻿using System.Diagnostics;
+using Lexer;
 namespace Parser;
-public sealed class SyntaxTree
+public sealed class SyntaxTree(IEnumerable<string> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
 {
-	public IReadOnlyList<string> Diagnostics { get; }
-	public ExpressionSyntax Root { get; }
-	public SyntaxToken EndOfFileToken { get; }
-	public SyntaxTree(IEnumerable<string> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
-	{
-		Diagnostics = diagnostics.ToArray();
-		Root = root;
-		EndOfFileToken = endOfFileToken;
-	}
+	public IReadOnlyList<string> Diagnostics { get; } = [.. diagnostics];
+	public ExpressionSyntax Root { get; } = root;
+	public SyntaxToken EndOfFileToken { get; } = endOfFileToken;
 	public static SyntaxTree Parse(string text)
 	{
 		var parser = new Parser(text);

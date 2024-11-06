@@ -1,6 +1,5 @@
 ﻿using Lexer;
 using Parser;
-using Evaluator;
 
 namespace Compiler;
 public static class Program
@@ -13,14 +12,20 @@ public static class Program
 			string? text = Console.ReadLine();
 			if (string.IsNullOrWhiteSpace(text))
 			{
-				StreamReader sr = new("E:\\GitHub\\Compiler\\target.txt");
+				Console.WriteLine("Invalid Expression");
+			}
+			else if (text.StartsWith("$file"))
+			{
+				string filePath = text[5..];
+				StreamReader sr = new(filePath);
 				text = sr.ReadToEnd();
 				sr.Close();
 				Console.WriteLine("Contents:");
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.WriteLine(text);
 				Console.ForegroundColor = ConsoleColor.White;
-			} else if (text == "$cls")
+			}
+			else if (text == "$cls")
 			{
 				Console.Clear();
 				continue;

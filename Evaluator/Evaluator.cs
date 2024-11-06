@@ -1,14 +1,9 @@
 ﻿using Lexer;
 
 namespace Evaluator;
-public sealed class Evaluator
+public sealed class Evaluator(ExpressionSyntax root)
 {
-    private readonly ExpressionSyntax _root;
-
-    public Evaluator(ExpressionSyntax root)
-    {
-        _root = root;
-    }
+    private readonly ExpressionSyntax _root = root;
 
     public object Evaluate()
     {

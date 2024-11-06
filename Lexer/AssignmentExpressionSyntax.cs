@@ -1,19 +1,12 @@
 ﻿namespace Lexer;
 
-public sealed class AssignmentExpressionSyntax : ExpressionSyntax
+public sealed class AssignmentExpressionSyntax(SyntaxToken variableToken, SyntaxToken equalsToken, ExpressionSyntax expression) : ExpressionSyntax
 {
     public override SyntaxKind Kind => SyntaxKind.AssignmentExpression;
 
-    public SyntaxToken VariableToken { get; }
-    public SyntaxToken EqualsToken { get; }
-    public ExpressionSyntax Expression { get; }
-
-    public AssignmentExpressionSyntax(SyntaxToken variableToken, SyntaxToken equalsToken, ExpressionSyntax expression)
-    {
-        VariableToken = variableToken;
-        EqualsToken = equalsToken;
-        Expression = expression;
-    }
+    public SyntaxToken VariableToken { get; } = variableToken;
+    public SyntaxToken EqualsToken { get; } = equalsToken;
+    public ExpressionSyntax Expression { get; } = expression;
 
     public override IEnumerable<SyntaxNode> GetChildren()
     {

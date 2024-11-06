@@ -1,13 +1,9 @@
 ﻿namespace Lexer;
-public sealed class Lexer
+public sealed class Lexer(string text)
 {
-    private readonly string _text;
+    private readonly string _text = text;
     private int _position;
 
-    public Lexer(string text)
-    {
-        _text = text;
-    }
     private char Peek(int offset)
     {
         int index = _position + offset;
