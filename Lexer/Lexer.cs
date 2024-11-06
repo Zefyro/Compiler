@@ -7,9 +7,7 @@ public sealed class Lexer(string text)
     private char Peek(int offset)
     {
         int index = _position + offset;
-        if (index >= _text.Length)
-            return '\0';
-        return _text[index];
+        return index >= _text.Length ? '\0' : _text[index];
     }
     private char Current => Peek(0);
     private void Next()
@@ -91,6 +89,8 @@ public sealed class Lexer(string text)
                 return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", null);
             case '=':
                 return new SyntaxToken(SyntaxKind.EqualsToken, _position++, "=", null);
+            case ';':
+                return new SyntaxToken(SyntaxKind.EndOfExpressionToken, _position++, ";", null);
         }
         return new SyntaxToken(SyntaxKind.InvalidToken, _position++, _text.Substring(_position - 1, 1), null);
     }

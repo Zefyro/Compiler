@@ -7,6 +7,6 @@ public sealed class SyntaxToken(SyntaxKind kind, int position, string? text, obj
     public object? Value { get; } = value;
 	public override IEnumerable<SyntaxNode> GetChildren()
 	{
-		return Enumerable.Empty<SyntaxNode>();
+		return [];
 	}
 }

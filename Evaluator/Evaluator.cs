@@ -4,13 +4,9 @@ namespace Evaluator;
 public sealed class Evaluator(ExpressionSyntax root)
 {
     private readonly ExpressionSyntax _root = root;
+    public object Evaluate() => EvaluateExpression(_root);
 
-    public object Evaluate()
-    {
-        return EvaluateExpression(_root);
-    }
-
-    private object EvaluateExpression(ExpressionSyntax node)
+    private static object EvaluateExpression(ExpressionSyntax node)
     {
         if (node is LiteralExpressionSyntax n)
             return (int)n.LiteralToken.Value!;

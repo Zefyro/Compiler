@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Lexer;
+﻿using Lexer;
 namespace Parser;
 public sealed class SyntaxTree(IEnumerable<string> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
 {

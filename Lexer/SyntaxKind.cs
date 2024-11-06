@@ -15,6 +15,7 @@ public enum SyntaxKind
     SlashSlashToken,
     SlashStarToken,
     EqualsToken,
+    EndOfExpressionToken,
     VariableToken,
 
     // Expressions
