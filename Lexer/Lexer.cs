@@ -1,4 +1,6 @@
-﻿namespace Lexer;
+﻿using System.Globalization;
+
+namespace Lexer;
 public sealed class Lexer(string text)
 {
     private readonly string _text = text;
@@ -29,9 +31,8 @@ public sealed class Lexer(string text)
             int length = _position - start;
             string text = _text.Substring(start, length);
             _ = int.TryParse(text, out int iValue);
-            bool isFloat = float.TryParse(text, out float fValue);
+            bool isFloat = float.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out float fValue);
             object value = isFloat ? fValue : iValue;
-            //Console.WriteLine(text);
             return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
         }
         else if (char.IsWhiteSpace(Current))
