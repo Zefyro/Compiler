@@ -34,7 +34,7 @@ public sealed class Evaluator(ExpressionSyntax root)
                 SyntaxKind.MinusToken => (int)left - (int)right,
                 SyntaxKind.StarToken => (int)left * (int)right,
                 SyntaxKind.SlashToken => (int)left / (int)right,
-                SyntaxKind.CaretToken => Math.Pow((int)left, (int)right),
+                SyntaxKind.CaretToken => (int)Math.Pow((int)left, (int)right),
                 _ => throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}"),
             };
         }
