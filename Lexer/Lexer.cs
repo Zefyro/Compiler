@@ -25,6 +25,7 @@ public sealed class Lexer(string text)
         
         if (char.IsDigit(Current))
         {
+            // FIXME: make sure to allow only 1 decimal point in a floating point value
             while (char.IsDigit(Current) || Current == '.')
                 Next();
             
