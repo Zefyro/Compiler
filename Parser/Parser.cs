@@ -47,9 +47,9 @@ public sealed class Parser
     }
     public SyntaxTree Parse()
 	{
-		ExpressionSyntax expresion = ParseExpression();
+		ExpressionSyntax expression = ParseExpression();
 		SyntaxToken endOfFileToken = Match(SyntaxKind.EndOfFileToken);
-		return new SyntaxTree(_diagnostics, expresion, endOfFileToken);
+		return new SyntaxTree(_diagnostics, expression, endOfFileToken);
 	}
     private ExpressionSyntax ParseExpression()
     {
