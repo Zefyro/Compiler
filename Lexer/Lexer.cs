@@ -58,6 +58,8 @@ public sealed class Lexer(string text)
                 return new SyntaxToken(SyntaxKind.MinusToken, _position++, "-", null);
             case '*':
                 return new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null);
+            case '^':
+                return new SyntaxToken(SyntaxKind.CaretToken, _position++, "^", null);
             case '/':
                 {
                     if (Peek(1) == '/')
