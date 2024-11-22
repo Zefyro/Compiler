@@ -23,12 +23,15 @@ public sealed class Lexer(string text)
         
         if (char.IsDigit(Current))
         {
-            while (char.IsDigit(Current))
+            while (char.IsDigit(Current) || Current == '.')
                 Next();
             
             int length = _position - start;
             string text = _text.Substring(start, length);
-            _ = int.TryParse(text, out int value);
+            _ = int.TryParse(text, out int iValue);
+            bool isFloat = float.TryParse(text, out float fValue);
+            object value = isFloat ? fValue : iValue;
+            //Console.WriteLine(text);
             return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
         }
         else if (char.IsWhiteSpace(Current))
@@ -57,9 +60,12 @@ public sealed class Lexer(string text)
             case '-':
                 return new SyntaxToken(SyntaxKind.MinusToken, _position++, "-", null);
             case '*':
+                if (Peek(1) == '*')
+                    {
+                        Next();
+                        return new SyntaxToken(SyntaxKind.StarStarToken, _position++, "**", null);
+                    }
                 return new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null);
-            case '^':
-                return new SyntaxToken(SyntaxKind.CaretToken, _position++, "^", null);
             case '/':
                 {
                     if (Peek(1) == '/')

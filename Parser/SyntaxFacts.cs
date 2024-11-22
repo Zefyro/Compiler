@@ -7,7 +7,7 @@ public static class SyntaxFacts
 	{
 		return kind switch
 		{
-			SyntaxKind.CaretToken => 3,
+			SyntaxKind.StarStarToken => 3,
 			SyntaxKind.StarToken or SyntaxKind.SlashToken => 2,
 			SyntaxKind.PlusToken or SyntaxKind.MinusToken => 1,
 			_ => 0,
