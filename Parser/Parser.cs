@@ -62,7 +62,7 @@ public sealed class Parser
         {
             SyntaxToken variableToken = Next();
             SyntaxToken operatorToken = Next();
-            ExpressionSyntax right = ParseAssignmentExpression();
+            ExpressionSyntax right = ParseBinaryExpression();
             return new AssignmentExpressionSyntax(variableToken, operatorToken, right);
         }
 
@@ -90,7 +90,10 @@ public sealed class Parser
 			
 			SyntaxToken operatorToken = Next();
 			ExpressionSyntax right = ParseBinaryExpression(precedence);
-			left = new BinaryExpressionSyntax(left, operatorToken, right);
+            if (operatorToken.Kind is SyntaxKind.EqualsEqualsToken or SyntaxKind.LessthanToken or SyntaxKind.MorethanToken or SyntaxKind.LessthanEqualsToken or SyntaxKind.MorethanEqualsToken)
+                left = new BooleanExpressionSyntax(left, operatorToken, right);
+            else
+                left = new BinaryExpressionSyntax(left, operatorToken, right);
 		}
 		return left;
 	}

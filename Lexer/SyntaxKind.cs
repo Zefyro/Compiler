@@ -16,6 +16,11 @@ public enum SyntaxKind
     SlashSlashToken,
     SlashStarToken,
     EqualsToken,
+    LessthanToken,
+    MorethanToken,
+    EqualsEqualsToken,
+    LessthanEqualsToken,
+    MorethanEqualsToken,
     EndOfExpressionToken,
     VariableToken,
 

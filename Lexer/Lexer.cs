@@ -32,8 +32,8 @@ public sealed class Lexer(string text)
             int length = _position - start;
             string text = _text.Substring(start, length);
             _ = int.TryParse(text, out int iValue);
-            bool isFloat = float.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out float fValue);
-            object value = isFloat ? fValue : iValue;
+            bool isDouble = double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out double dValue);
+            object value = isDouble ? dValue : iValue;
             return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
         }
         else if (char.IsWhiteSpace(Current))
@@ -98,9 +98,34 @@ public sealed class Lexer(string text)
             case ')':
                 return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", null);
             case '=':
-                return new SyntaxToken(SyntaxKind.EqualsToken, _position++, "=", null);
+                {
+                    if (Peek(1) == '=')
+                    {
+                        Next();
+                        return new SyntaxToken(SyntaxKind.EqualsEqualsToken, _position++, "==", null);
+                    }
+                    return new SyntaxToken(SyntaxKind.EqualsToken, _position++, "=", null);
+                }
             case ';':
                 return new SyntaxToken(SyntaxKind.EndOfExpressionToken, _position++, ";", null);
+            case '<':
+                {
+                    if (Peek(1) == '=')
+                    {
+                        Next();
+                        return new SyntaxToken(SyntaxKind.LessthanEqualsToken, _position++, "<=", null);
+                    }
+                    return new SyntaxToken(SyntaxKind.LessthanToken, _position++, "<", null);
+                }
+            case '>':
+                {
+                    if (Peek(1) == '=')
+                    {
+                        Next();
+                        return new SyntaxToken(SyntaxKind.MorethanEqualsToken, _position++, ">=", null);
+                    }
+                    return new SyntaxToken(SyntaxKind.MorethanToken, _position++, ">", null);
+                }
         }
         return new SyntaxToken(SyntaxKind.InvalidToken, _position++, _text.Substring(_position - 1, 1), null);
     }
