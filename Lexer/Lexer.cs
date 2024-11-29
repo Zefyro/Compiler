@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace Lexer;
 public sealed class Lexer(string text)
@@ -25,9 +26,14 @@ public sealed class Lexer(string text)
         
         if (char.IsDigit(Current))
         {
-            // FIXME: make sure to allow only 1 decimal point in a floating point value
+            int decimalPointCounter = 0;
             while (char.IsDigit(Current) || Current == '.')
+            {
+                decimalPointCounter += Unsafe.BitCast<bool, byte>(Current == '.');
+                if (decimalPointCounter >= 2)
+                    break;
                 Next();
+            }
             
             int length = _position - start;
             string text = _text.Substring(start, length);
