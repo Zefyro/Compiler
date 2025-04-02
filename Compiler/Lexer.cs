@@ -44,7 +44,7 @@ public sealed class Lexer(string text) {
             string text = _text.Substring(start, length);
             return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
         }
-        else if (Current == '_') {
+        else if (char.IsLetter(Current) || Current == '_') {
             while (char.IsLetter(Current) || Current == '_')
                 Next();
             

@@ -1,16 +1,17 @@
 ﻿namespace Compiler;
-public sealed class Evaluator(ExpressionSyntax root)
-{
+public sealed class Evaluator(ExpressionSyntax root) {
     private readonly ExpressionSyntax _root = root;
     public object Evaluate() => EvaluateExpression(_root);
-
-    private static object EvaluateExpression(ExpressionSyntax node)
-    {
+    private static object EvaluateExpression(ExpressionSyntax node) {
+        if (node is VariableExpressionSyntax v) {
+            Program.Binder.Variables.TryGetValue(v.VariableToken.Text!, out object? variable);
+            return variable ?? 0;
+        }
+        
         if (node is LiteralExpressionSyntax n)
             return (double)n.LiteralToken.Value!;
         
-        if (node is UnaryExpressionSyntax u)
-        {
+        if (node is UnaryExpressionSyntax u) {
             object operand = EvaluateExpression(u.Operand);
             
             if (u.OperatorToken.Kind is SyntaxKind.PlusToken)
@@ -21,13 +22,11 @@ public sealed class Evaluator(ExpressionSyntax root)
                 throw new Exception($"Unexpected unary operator {u.OperatorToken.Kind}");
         }
         
-        if (node is BinaryExpressionSyntax b)
-        {
+        if (node is BinaryExpressionSyntax b) {
             object left = EvaluateExpression(b.Left);
             object right = EvaluateExpression(b.Right);
 
-            return b.OperatorToken.Kind switch
-            {
+            return b.OperatorToken.Kind switch {
                 SyntaxKind.PlusToken => (double)left + (double)right,
                 SyntaxKind.MinusToken => (double)left - (double)right,
                 SyntaxKind.StarToken => (double)left * (double)right,
@@ -37,8 +36,7 @@ public sealed class Evaluator(ExpressionSyntax root)
             };
         }
 
-        if (node is BooleanExpressionSyntax bo)
-        {
+        if (node is BooleanExpressionSyntax bo) {
             object left = EvaluateExpression(bo.Left);
             object right = EvaluateExpression(bo.Right);
 
@@ -55,8 +53,10 @@ public sealed class Evaluator(ExpressionSyntax root)
         if (node is ParenthesizedExpressionSyntax p)
             return EvaluateExpression(p.Expression);
         
-        if (node is AssignmentExpressionSyntax a)
-            return EvaluateExpression(a.Expression);
+        if (node is AssignmentExpressionSyntax a) {
+            Program.Binder.BindExpression(a);
+            return Program.Binder.Variables[a.VariableToken.Text!];
+        }
 
         throw new Exception($"Unexpected node {node.Kind}");
     }
