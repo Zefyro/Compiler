@@ -5,14 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compiler", "Compiler\Compiler.csproj", "{567153BB-B550-4EDF-AF8E-5172E7AC5B70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lexer", "Lexer\Lexer.csproj", "{899CD1B5-C171-4517-82CE-ABC00540A640}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{23C350A3-77D2-4CF2-B2D8-0387CC1EF527}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluator", "Evaluator\Evaluator.csproj", "{59EC9A94-AC88-4E96-8531-4D60051920B6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binder", "Binder\Binder.csproj", "{E9C577AC-E0DC-4519-A939-DAAB90635DD2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,21 +18,5 @@ Global
 		{567153BB-B550-4EDF-AF8E-5172E7AC5B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{567153BB-B550-4EDF-AF8E-5172E7AC5B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{567153BB-B550-4EDF-AF8E-5172E7AC5B70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{899CD1B5-C171-4517-82CE-ABC00540A640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{899CD1B5-C171-4517-82CE-ABC00540A640}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{899CD1B5-C171-4517-82CE-ABC00540A640}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{899CD1B5-C171-4517-82CE-ABC00540A640}.Release|Any CPU.Build.0 = Release|Any CPU
-		{23C350A3-77D2-4CF2-B2D8-0387CC1EF527}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{23C350A3-77D2-4CF2-B2D8-0387CC1EF527}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{23C350A3-77D2-4CF2-B2D8-0387CC1EF527}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{23C350A3-77D2-4CF2-B2D8-0387CC1EF527}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59EC9A94-AC88-4E96-8531-4D60051920B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59EC9A94-AC88-4E96-8531-4D60051920B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59EC9A94-AC88-4E96-8531-4D60051920B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59EC9A94-AC88-4E96-8531-4D60051920B6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E9C577AC-E0DC-4519-A939-DAAB90635DD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9C577AC-E0DC-4519-A939-DAAB90635DD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9C577AC-E0DC-4519-A939-DAAB90635DD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9C577AC-E0DC-4519-A939-DAAB90635DD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

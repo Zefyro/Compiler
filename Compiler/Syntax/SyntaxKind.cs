@@ -1,6 +1,5 @@
-﻿namespace Lexer;
-public enum SyntaxKind
-{
+﻿namespace Compiler.Syntax;
+public enum SyntaxKind {
     // Tokens
     InvalidToken,
     EndOfFileToken,

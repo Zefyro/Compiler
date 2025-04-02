@@ -1,5 +1,4 @@
-﻿using Lexer;
-namespace Parser;
+﻿namespace Compiler;
 public sealed class Parser
 {
     private readonly SyntaxToken[] _tokens;
@@ -8,7 +7,7 @@ public sealed class Parser
     public Parser(string text)
     {
         List<SyntaxToken> tokens = new();
-        Lexer.Lexer lexer = new(text);
+        Lexer lexer = new(text);
         SyntaxToken token;
         do
         {

@@ -1,34 +1,28 @@
 ﻿using System.Globalization;
 using System.Runtime.CompilerServices;
 
-namespace Lexer;
-public sealed class Lexer(string text)
-{
+namespace Compiler;
+public sealed class Lexer(string text) {
     private readonly string _text = text;
     private int _position;
 
-    private char Peek(int offset)
-    {
+    private char Peek(int offset) {
         int index = _position + offset;
         return index >= _text.Length ? '\0' : _text[index];
     }
     private char Current => Peek(0);
-    private void Next()
-    {
+    private void Next() {
         _position++;
     }
-    public SyntaxToken NextToken()
-    {
+    public SyntaxToken NextToken() {
         if (_position >= _text.Length)
             return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, "\0", null);
         
         int start = _position;
         
-        if (char.IsDigit(Current))
-        {
+        if (char.IsDigit(Current)) {
             int decimalPointCounter = 0;
-            while (char.IsDigit(Current) || Current == '.')
-            {
+            while (char.IsDigit(Current) || Current == '.') {
                 decimalPointCounter += Unsafe.BitCast<bool, byte>(Current == '.');
                 if (decimalPointCounter >= 2)
                     break;
@@ -42,8 +36,7 @@ public sealed class Lexer(string text)
             object value = isDouble ? dValue : iValue;
             return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
         }
-        else if (char.IsWhiteSpace(Current))
-        {
+        else if (char.IsWhiteSpace(Current)) {
             while (char.IsWhiteSpace(Current))
                 Next();
             
@@ -51,8 +44,7 @@ public sealed class Lexer(string text)
             string text = _text.Substring(start, length);
             return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
         }
-        else if (Current == '_')
-        {
+        else if (Current == '_') {
             while (char.IsLetter(Current) || Current == '_')
                 Next();
             
@@ -67,17 +59,15 @@ public sealed class Lexer(string text)
                 return new SyntaxToken(SyntaxKind.PlusToken, _position++, "+", null);
             case '-':
                 return new SyntaxToken(SyntaxKind.MinusToken, _position++, "-", null);
-            case '*':
-                if (Peek(1) == '*')
-                    {
-                        Next();
-                        return new SyntaxToken(SyntaxKind.StarStarToken, _position++, "**", null);
-                    }
-                return new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null);
-            case '/':
-                {
-                    if (Peek(1) == '/')
-                    {
+            case '*': {
+                    if (Peek(1) == '*') {
+                            Next();
+                            return new SyntaxToken(SyntaxKind.StarStarToken, _position++, "**", null);
+                        }
+                    return new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null);
+                }
+            case '/': {
+                    if (Peek(1) == '/') {
                         while ((Current != '\n') && (Current != '\0'))
                             Next();
                         
@@ -85,12 +75,12 @@ public sealed class Lexer(string text)
                         string text = _text.Substring(start, length);
                         return new SyntaxToken(SyntaxKind.SlashSlashToken, start, text, null);
                     }
-                    else if (Peek(1) == '*')
-                    {
+                    else if (Peek(1) == '*') {
                         while (!((Current == '*') && (Peek(1) == '/')) && (Current != '\0'))
                             Next();
                         
-                        if (Current != '\0') Next();
+                        if (Current != '\0') 
+                            Next();
                         var length = _position++ - start;
                         if (start + length > _text.Length) length--;
                         
@@ -103,10 +93,8 @@ public sealed class Lexer(string text)
                 return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _position++, "(", null);
             case ')':
                 return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", null);
-            case '=':
-                {
-                    if (Peek(1) == '=')
-                    {
+            case '=': {
+                    if (Peek(1) == '=') {
                         Next();
                         return new SyntaxToken(SyntaxKind.EqualsEqualsToken, _position++, "==", null);
                     }
@@ -114,19 +102,15 @@ public sealed class Lexer(string text)
                 }
             case ';':
                 return new SyntaxToken(SyntaxKind.EndOfExpressionToken, _position++, ";", null);
-            case '<':
-                {
-                    if (Peek(1) == '=')
-                    {
+            case '<': {
+                    if (Peek(1) == '=') {
                         Next();
                         return new SyntaxToken(SyntaxKind.LessthanEqualsToken, _position++, "<=", null);
                     }
                     return new SyntaxToken(SyntaxKind.LessthanToken, _position++, "<", null);
                 }
-            case '>':
-                {
-                    if (Peek(1) == '=')
-                    {
+            case '>': {
+                    if (Peek(1) == '=') {
                         Next();
                         return new SyntaxToken(SyntaxKind.MorethanEqualsToken, _position++, ">=", null);
                     }

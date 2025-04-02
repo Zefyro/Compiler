@@ -1,6 +1,4 @@
-﻿using Lexer;
-
-namespace Evaluator;
+﻿namespace Compiler;
 public sealed class Evaluator(ExpressionSyntax root)
 {
     private readonly ExpressionSyntax _root = root;
