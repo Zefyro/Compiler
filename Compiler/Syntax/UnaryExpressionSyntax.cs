@@ -1,4 +1,4 @@
-﻿namespace Compiler.Syntax;
+﻿namespace Compiler;
 public sealed class UnaryExpressionSyntax(SyntaxToken operatorToken, ExpressionSyntax operand) : ExpressionSyntax {
     public override SyntaxKind Kind => SyntaxKind.UnaryExpression;
     public SyntaxToken OperatorToken { get; } = operatorToken;

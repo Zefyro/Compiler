@@ -1,4 +1,4 @@
-﻿namespace Compiler.Syntax;
+﻿namespace Compiler;
 public enum SyntaxKind {
     // Tokens
     InvalidToken,

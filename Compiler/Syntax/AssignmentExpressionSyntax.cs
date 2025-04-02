@@ -1,4 +1,4 @@
-﻿namespace Compiler.Syntax;
+﻿namespace Compiler;
 public sealed class AssignmentExpressionSyntax(SyntaxToken variableToken, SyntaxToken equalsToken, ExpressionSyntax expression) : ExpressionSyntax {
     public override SyntaxKind Kind => SyntaxKind.AssignmentExpression;
 

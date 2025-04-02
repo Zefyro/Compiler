@@ -1,4 +1,4 @@
-﻿namespace Compiler.Syntax;
+﻿namespace Compiler;
 public static class SyntaxFacts {
     public static int GetBinaryOperatorPrecedence(this SyntaxKind kind) {
         return kind switch {

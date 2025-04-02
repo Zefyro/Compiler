@@ -1,4 +1,4 @@
-﻿namespace Compiler.Syntax;
+﻿namespace Compiler;
 public sealed class SyntaxTree(IEnumerable<string> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken) {
 	public IReadOnlyList<string> Diagnostics { get; } = [.. diagnostics];
 	public ExpressionSyntax Root { get; } = root;

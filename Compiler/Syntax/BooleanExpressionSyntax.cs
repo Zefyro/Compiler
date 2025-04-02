@@ -1,4 +1,4 @@
-namespace Compiler.Syntax;
+namespace Compiler;
 public class BooleanExpressionSyntax(ExpressionSyntax left, SyntaxToken operationToken, ExpressionSyntax right) : ExpressionSyntax {
     public override SyntaxKind Kind => SyntaxKind.UnaryExpression;
     public ExpressionSyntax Left { get; } = left;
