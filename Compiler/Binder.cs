@@ -1,13 +1,17 @@
 namespace Compiler;
 public sealed class Binder {
     public Dictionary<string, object> Variables = [];
+    public readonly Dictionary<string, double> Constants = new() {
+        {"PHI", (1 + Math.Sqrt(5)) / 2},
+        {"PI", Math.PI},
+        {"TAU", Math.Tau},
+    };
     public void BindExpression(AssignmentExpressionSyntax exprSyntax) {
-        Variables.TryGetValue(exprSyntax.VariableToken.Text!, out object? value);
         object expression = new Evaluator(exprSyntax.Expression).Evaluate();
-        if (value is null) {
-            Variables.Add(exprSyntax.VariableToken.Text!, expression);
+        if (Variables.ContainsKey(exprSyntax.VariableToken.Text!)) {
+            Variables[exprSyntax.VariableToken.Text!] = expression;
             return;
         }
-        Variables[exprSyntax.VariableToken.Text!] = expression;
+        Variables.Add(exprSyntax.VariableToken.Text!, expression);
     }
 }

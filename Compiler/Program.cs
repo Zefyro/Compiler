@@ -1,6 +1,7 @@
 ﻿namespace Compiler;
 public static class Program {
     public static readonly Binder Binder = new();
+    public static List<string> Diagnostics = [];
     public static void Main(string[] args) {
         bool print_tree = true;
         for (;;) {
@@ -24,9 +25,14 @@ public static class Program {
                 continue;
             }
             else if (text == "$print_vars") {
-                foreach (var kvp in Binder.Variables) {
+                Console.WriteLine("Constants");
+                foreach (var kvp in Binder.Constants)
                     Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-                }
+                if (Binder.Variables.Count != 0)
+                    Console.WriteLine("Variables");
+                foreach (var kvp in Binder.Variables)
+                    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+                
                 continue;
             }
             else if (text == "$help") {
@@ -60,6 +66,14 @@ public static class Program {
             if (!syntaxTree.Diagnostics.Any()) {
                 Evaluator evaluator = new(syntaxTree.Root);
                 object result = evaluator.Evaluate();
+
+                if (Diagnostics.Count != 0) {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    foreach (string diagnostic in Diagnostics)
+                        Console.WriteLine(diagnostic);
+                    Console.ForegroundColor = color;
+                    Diagnostics = [];
+                }
                 Console.WriteLine(result);
             }
             else  {

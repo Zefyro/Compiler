@@ -4,48 +4,56 @@ public sealed class Evaluator(ExpressionSyntax root) {
     public object Evaluate() => EvaluateExpression(_root);
     private static object EvaluateExpression(ExpressionSyntax node) {
         if (node is VariableExpressionSyntax v) {
+            if (Program.Binder.Constants.TryGetValue(v.VariableToken.Text!, out double value)) {
+                return value;
+            }
+
             Program.Binder.Variables.TryGetValue(v.VariableToken.Text!, out object? variable);
-            return variable ?? 0;
+            if (variable is null) {
+                Program.Diagnostics.Add($"'{v.VariableToken.Text!}' is not defined, it will be treated as '0'.");
+                return 0.0d;
+            }
+            return variable;
         }
         
         if (node is LiteralExpressionSyntax n)
             return (double)n.LiteralToken.Value!;
         
         if (node is UnaryExpressionSyntax u) {
-            object operand = EvaluateExpression(u.Operand);
+            double operand = (double)EvaluateExpression(u.Operand);
             
             if (u.OperatorToken.Kind is SyntaxKind.PlusToken)
                 return operand;
             else if (u.OperatorToken.Kind is SyntaxKind.MinusToken)
-                return -(double)operand;
+                return -operand;
             else
                 throw new Exception($"Unexpected unary operator {u.OperatorToken.Kind}");
         }
         
         if (node is BinaryExpressionSyntax b) {
-            object left = EvaluateExpression(b.Left);
-            object right = EvaluateExpression(b.Right);
+            double left = (double)EvaluateExpression(b.Left);
+            double right = (double)EvaluateExpression(b.Right);
 
             return b.OperatorToken.Kind switch {
-                SyntaxKind.PlusToken => (double)left + (double)right,
-                SyntaxKind.MinusToken => (double)left - (double)right,
-                SyntaxKind.StarToken => (double)left * (double)right,
-                SyntaxKind.SlashToken => (double)left / (double)right,
-                SyntaxKind.StarStarToken => (double)Math.Pow((double)left, (double)right),
+                SyntaxKind.PlusToken => left + right,
+                SyntaxKind.MinusToken => left - right,
+                SyntaxKind.StarToken => left * right,
+                SyntaxKind.SlashToken => left / right,
+                SyntaxKind.StarStarToken => Math.Pow(left, right),
                 _ => throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}"),
             };
         }
 
         if (node is BooleanExpressionSyntax bo) {
-            object left = EvaluateExpression(bo.Left);
-            object right = EvaluateExpression(bo.Right);
+            double left = (double)EvaluateExpression(bo.Left);
+            double right = (double)EvaluateExpression(bo.Right);
 
             return bo.OperationToken.Kind switch {
-                SyntaxKind.EqualsEqualsToken => (double)left == (double)right,
-                SyntaxKind.LessthanToken => (double)left < (double)right,
-                SyntaxKind.MorethanToken => (double)left > (double)right,
-                SyntaxKind.LessthanEqualsToken => (double)left <= (double)right,
-                SyntaxKind.MorethanEqualsToken => (double)left >= (double)right,
+                SyntaxKind.EqualsEqualsToken => left == right,
+                SyntaxKind.LessthanToken => left < right,
+                SyntaxKind.MorethanToken => left > right,
+                SyntaxKind.LessthanEqualsToken => left <= right,
+                SyntaxKind.MorethanEqualsToken => left >= right,
                 _ => throw new Exception($"Unexpected boolean operator {bo.OperationToken.Kind}")
             };
         }
@@ -54,6 +62,10 @@ public sealed class Evaluator(ExpressionSyntax root) {
             return EvaluateExpression(p.Expression);
         
         if (node is AssignmentExpressionSyntax a) {
+            if (Program.Binder.Constants.TryGetValue(a.VariableToken.Text!, out double value)) {
+                Program.Diagnostics.Add($"Failed to bind expression '{EvaluateExpression(a.Expression)}' to a defined constant '{a.VariableToken.Text!}'");
+                return value;
+            }
             Program.Binder.BindExpression(a);
             return Program.Binder.Variables[a.VariableToken.Text!];
         }
