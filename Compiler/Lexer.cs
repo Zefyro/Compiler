@@ -101,6 +101,13 @@ public sealed class Lexer(string text) {
                     }
                     return new SyntaxToken(SyntaxKind.EqualsToken, _position++, "=", null);
                 }
+            case '!': {
+                    if (Peek(1) == '=') {
+                        Next();
+                        return new SyntaxToken(SyntaxKind.BangEqualsToken, _position++, "!=", null);
+                    }
+                    break; // ! is not a valid token by itself, yet
+                }
             case ';':
                 return new SyntaxToken(SyntaxKind.EndOfExpressionToken, _position++, ";", null);
             case '<': {

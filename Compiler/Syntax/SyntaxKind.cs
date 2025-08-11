@@ -22,6 +22,7 @@ public enum SyntaxKind {
     LessthanToken,
     MorethanToken,
     EqualsEqualsToken,
+    BangEqualsToken, // Added
     LessthanEqualsToken,
     MorethanEqualsToken,
     EndOfExpressionToken,

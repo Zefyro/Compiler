@@ -5,7 +5,7 @@ public static class SyntaxFacts {
             SyntaxKind.StarStarToken => 4,
             SyntaxKind.StarToken or SyntaxKind.SlashToken => 3,
             SyntaxKind.PlusToken or SyntaxKind.MinusToken => 2,
-            SyntaxKind.EqualsEqualsToken or SyntaxKind.LessthanToken or SyntaxKind.MorethanToken 
+            SyntaxKind.EqualsEqualsToken or SyntaxKind.BangEqualsToken or SyntaxKind.LessthanToken or SyntaxKind.MorethanToken 
             or SyntaxKind.LessthanEqualsToken or SyntaxKind.MorethanEqualsToken => 1,
             _ => 0,
         };
