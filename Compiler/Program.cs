@@ -1,16 +1,21 @@
-﻿namespace Compiler;
+﻿using Compiler.Syntax;
+
+namespace Compiler;
 public static class Program {
     public static readonly Binder Binder = new();
     public static List<string> Diagnostics = [];
     public static void Main(string[] args) {
         bool print_tree = true;
-        for (;;) {
+        for (; ; )
+        {
             Console.Write("> ");
             string? text = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(text)) {
+            if (string.IsNullOrWhiteSpace(text))
+            {
                 Console.WriteLine("Invalid Expression");
             }
-            else if (text.StartsWith("$file")) {
+            else if (text.StartsWith("$file"))
+            {
                 string filePath = text[5..];
                 StreamReader sr = new(filePath);
                 text = sr.ReadToEnd();
@@ -20,11 +25,13 @@ public static class Program {
                 Console.WriteLine(text);
                 Console.ForegroundColor = ConsoleColor.White;
             }
-            else if (text == "$cls") {
+            else if (text == "$cls")
+            {
                 Console.Clear();
                 continue;
             }
-            else if (text == "$print_vars") {
+            else if (text == "$print_vars")
+            {
                 Console.WriteLine("Constants");
                 foreach (var kvp in Binder.Constants)
                     Console.WriteLine($"{kvp.Key}: {kvp.Value}");
@@ -32,42 +39,46 @@ public static class Program {
                     Console.WriteLine("Variables");
                 foreach (var kvp in Binder.Variables)
                     Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-                
+
                 continue;
             }
-            else if (text == "$help") {
+            else if (text == "$help")
+            {
                 Console.WriteLine(
                     "Operators: '+', '-', '*', '/', '(', ')', '**', '=', '==', '<', '>', '<=','>=', ';'\n" +
                     "Comments: '// single line', '/* multi line */'" +
-                    "$help - show this help message\n" + 
-                    "$cls - clear console\n$print_vars - print used variable names and their values\n" + 
-                    "$file <path> - evaluate the contents of a file\n" + 
+                    "$help - show this help message\n" +
+                    "$cls - clear console\n$print_vars - print used variable names and their values\n" +
+                    "$file <path> - evaluate the contents of a file\n" +
                     "$tree - toggle syntax tree"
                 );
                 continue;
             }
-            else if (text == "$tree") {
+            else if (text == "$tree")
+            {
                 print_tree = !print_tree;
                 Console.WriteLine(print_tree);
                 continue;
             }
-            
+
             if (string.IsNullOrWhiteSpace(text))
                 return;
-            
+
             SyntaxTree syntaxTree = SyntaxTree.Parse(text);
-            
+
             ConsoleColor color = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.DarkGray;
             if (print_tree)
                 PrettyPrint(syntaxTree.Root);
             Console.ForegroundColor = color;
 
-            if (!syntaxTree.Diagnostics.Any()) {
+            if (!syntaxTree.Diagnostics.Any())
+            {
                 Evaluator evaluator = new(syntaxTree.Root);
                 object result = evaluator.Evaluate();
 
-                if (Diagnostics.Count != 0) {
+                if (Diagnostics.Count != 0)
+                {
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     foreach (string diagnostic in Diagnostics)
                         Console.WriteLine(diagnostic);
@@ -76,7 +87,8 @@ public static class Program {
                 }
                 Console.WriteLine(result);
             }
-            else  {
+            else
+            {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 foreach (string diagnostic in syntaxTree.Diagnostics)
                     Console.WriteLine(diagnostic);

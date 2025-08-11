@@ -1,3 +1,5 @@
+using Compiler.Syntax;
+
 namespace Compiler;
 public sealed class Binder {
     public Dictionary<string, object> Variables = [];

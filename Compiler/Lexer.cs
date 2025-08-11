@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Runtime.CompilerServices;
+using Compiler.Syntax;
 
 namespace Compiler;
 public sealed class Lexer(string text) {

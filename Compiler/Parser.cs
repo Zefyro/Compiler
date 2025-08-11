@@ -1,4 +1,6 @@
-﻿namespace Compiler;
+﻿using Compiler.Syntax;
+
+namespace Compiler;
 public sealed class Parser {
     private readonly SyntaxToken[] _tokens;
     private int _position;

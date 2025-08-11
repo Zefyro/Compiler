@@ -1,4 +1,4 @@
-﻿namespace Compiler;
+﻿namespace Compiler.Syntax;
 public sealed class ParenthesizedExpressionSyntax(SyntaxToken openParenthesisToken, ExpressionSyntax expression, SyntaxToken closeParenthesisToken) : ExpressionSyntax {
     public override SyntaxKind Kind => SyntaxKind.ParenthesizedExpression;
     public SyntaxToken OpenParenthesisToken { get; } = openParenthesisToken;

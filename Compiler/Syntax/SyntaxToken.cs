@@ -1,4 +1,4 @@
-﻿namespace Compiler;
+﻿namespace Compiler.Syntax;
 public sealed class SyntaxToken(SyntaxKind kind, int position, string? text, object? value) : SyntaxNode {
     public override SyntaxKind Kind { get; } = kind;
     public int Position { get; } = position;
