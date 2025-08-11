@@ -1,4 +1,4 @@
-﻿using Compiler.Syntax;
+using Compiler.Syntax;
 
 namespace Compiler;
 public sealed class Parser {
@@ -77,10 +77,7 @@ public sealed class Parser {
             
             SyntaxToken operatorToken = Next();
             ExpressionSyntax right = ParseBinaryExpression(precedence);
-            if (operatorToken.Kind is SyntaxKind.EqualsEqualsToken or SyntaxKind.LessthanToken or SyntaxKind.MorethanToken or SyntaxKind.LessthanEqualsToken or SyntaxKind.MorethanEqualsToken)
-                left = new BooleanExpressionSyntax(left, operatorToken, right);
-            else
-                left = new BinaryExpressionSyntax(left, operatorToken, right);
+            left = new BinaryExpressionSyntax(left, operatorToken, right);
         }
         return left;
     }

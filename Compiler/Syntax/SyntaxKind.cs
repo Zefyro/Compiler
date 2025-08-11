@@ -1,4 +1,4 @@
-﻿namespace Compiler.Syntax;
+namespace Compiler.Syntax;
 public enum SyntaxKind {
     // Tokens
     InvalidToken,
@@ -30,7 +30,6 @@ public enum SyntaxKind {
     // Expressions
     AssignmentExpression,
     BinaryExpression,
-    BooleanExpression,
     UnaryExpression,
     ParenthesizedExpression,
     LiteralExpression,
