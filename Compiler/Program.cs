@@ -1,18 +1,20 @@
-﻿using Compiler.Syntax;
+using Compiler.Binding;
+using Compiler.Diagnostics;
+using Compiler.Syntax;
 
 namespace Compiler;
 public static class Program {
-    public static readonly Binder Binder = new();
-    public static List<string> Diagnostics = [];
+    public static readonly Dictionary<string, object> Variables = [];
     public static void Main(string[] args) {
         bool print_tree = true;
-        for (; ; )
+        for (;;)
         {
             Console.Write("> ");
             string? text = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(text))
             {
                 Console.WriteLine("Invalid Expression");
+                continue;
             }
             else if (text.StartsWith("$file"))
             {
@@ -30,30 +32,6 @@ public static class Program {
                 Console.Clear();
                 continue;
             }
-            else if (text == "$print_vars")
-            {
-                Console.WriteLine("Constants");
-                foreach (var kvp in Binder.Constants)
-                    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-                if (Binder.Variables.Count != 0)
-                    Console.WriteLine("Variables");
-                foreach (var kvp in Binder.Variables)
-                    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-
-                continue;
-            }
-            else if (text == "$help")
-            {
-                Console.WriteLine(
-                    "Operators: '+', '-', '*', '/', '(', ')', '**', '=', '==', '<', '>', '<=','>=', ';'\n" +
-                    "Comments: '// single line', '/* multi line */'" +
-                    "$help - show this help message\n" +
-                    "$cls - clear console\n$print_vars - print used variable names and their values\n" +
-                    "$file <path> - evaluate the contents of a file\n" +
-                    "$tree - toggle syntax tree"
-                );
-                continue;
-            }
             else if (text == "$tree")
             {
                 print_tree = !print_tree;
@@ -65,38 +43,61 @@ public static class Program {
                 return;
 
             SyntaxTree syntaxTree = SyntaxTree.Parse(text);
+            var diagnostics = new DiagnosticBag();
 
             ConsoleColor color = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.DarkGray;
             if (print_tree)
-                PrettyPrint(syntaxTree.Root);
-            Console.ForegroundColor = color;
-
-            if (!syntaxTree.Diagnostics.Any())
             {
-                Evaluator evaluator = new(syntaxTree.Root);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[Syntax Nodes]");
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                PrettyPrintSyntaxNode(syntaxTree.Root);
+                Console.ForegroundColor = color;
+            }
+
+            // Collect diagnostics from SyntaxTree parsing
+            foreach (var diagnostic in syntaxTree.Diagnostics)
+            {
+                diagnostics.Report(diagnostic);
+            }
+
+            if (!diagnostics.ToImmutableArray().Any())
+            {
+                var binder = new Binder(diagnostics, Variables);
+                var boundExpression = binder.BindExpression(syntaxTree.Root);
+                if (print_tree)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("[Bound Nodes]");
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    PrettyPrintBoundNode(boundExpression);
+                    Console.ForegroundColor = color;
+                }
+                Evaluator evaluator = new(boundExpression, diagnostics, Variables);
                 object result = evaluator.Evaluate();
 
-                if (Diagnostics.Count != 0)
+                if (diagnostics.ToImmutableArray().Any())
                 {
                     Console.ForegroundColor = ConsoleColor.DarkRed;
-                    foreach (string diagnostic in Diagnostics)
+                    foreach (var diagnostic in diagnostics.ToImmutableArray())
                         Console.WriteLine(diagnostic);
                     Console.ForegroundColor = color;
-                    Diagnostics = [];
                 }
-                Console.WriteLine(result);
+                else
+                {
+                    Console.WriteLine(result);
+                }
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
-                foreach (string diagnostic in syntaxTree.Diagnostics)
+                foreach (var diagnostic in diagnostics.ToImmutableArray())
                     Console.WriteLine(diagnostic);
                 Console.ForegroundColor = color;
             }
         }
     }
-    private static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true) {
+    private static void PrettyPrintSyntaxNode(SyntaxNode node, string indent = "", bool isLast = true) {
         string marker = isLast ? "└──" : "├──";
 
         Console.Write(indent);
@@ -112,6 +113,35 @@ public static class Program {
         SyntaxNode? lastChild = node.GetChildren().LastOrDefault();
 
         foreach (SyntaxNode child in node.GetChildren())
-            PrettyPrint(child, indent, child == lastChild);
+            PrettyPrintSyntaxNode(child, indent, child == lastChild);
+    }
+
+    private static void PrettyPrintBoundNode(BoundNode node, string indent = "", bool isLast = true) {
+        string marker = isLast ? "└──" : "├──";
+
+        Console.Write(indent);
+        Console.Write(marker);
+        Console.Write(node.Kind);
+
+        if (node is BoundLiteralExpression l) {
+            Console.Write(" ");
+            Console.Write(l.Value);
+        }
+        else if (node is BoundVariableExpression v) {
+            Console.Write(" ");
+            Console.Write(v.VariableName);
+        }
+        else if (node is BoundExpression e)
+        {
+            Console.Write(" ");
+            Console.Write(e.Type);
+        }
+
+        Console.WriteLine();
+        indent += isLast ? "   " : "│  ";
+        BoundNode? lastChild = node.GetChildren().LastOrDefault();
+
+        foreach (BoundNode child in node.GetChildren())
+            PrettyPrintBoundNode(child, indent, child == lastChild);
     }
 }
