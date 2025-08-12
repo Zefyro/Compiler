@@ -13,7 +13,8 @@ public class ParserTests
 
         // Assert
         Assert.Empty(tree.Diagnostics);
-        var root = Assert.IsType<BinaryExpressionSyntax>(tree.Root);
+        var rootStatement = Assert.IsType<ExpressionStatementSyntax>(tree.Root);
+        var root = Assert.IsType<BinaryExpressionSyntax>(rootStatement.Expression);
 
         var left = Assert.IsType<LiteralExpressionSyntax>(root.Left);
         Assert.Equal(1.0d, left.LiteralToken.Value);
@@ -34,7 +35,8 @@ public class ParserTests
 
         // Assert
         Assert.Empty(tree.Diagnostics);
-        var root = Assert.IsType<BinaryExpressionSyntax>(tree.Root);
+        var rootStatement = Assert.IsType<ExpressionStatementSyntax>(tree.Root);
+        var root = Assert.IsType<BinaryExpressionSyntax>(rootStatement.Expression);
 
         var left = Assert.IsType<LiteralExpressionSyntax>(root.Left);
         Assert.Equal(3.0d, left.LiteralToken.Value);
@@ -64,7 +66,8 @@ public class ParserTests
 
         // Assert
         Assert.Empty(tree.Diagnostics);
-        var root = Assert.IsType<AssignmentExpressionSyntax>(tree.Root);
+        var rootStatement = Assert.IsType<ExpressionStatementSyntax>(tree.Root);
+        var root = Assert.IsType<AssignmentExpressionSyntax>(rootStatement.Expression);
 
         var variable = Assert.IsType<SyntaxToken>(root.VariableToken);
         Assert.Equal("a", variable.Text);
@@ -85,7 +88,8 @@ public class ParserTests
 
         // Assert
         Assert.Empty(tree.Diagnostics);
-        var root = Assert.IsType<UnaryExpressionSyntax>(tree.Root);
+        var rootStatement = Assert.IsType<ExpressionStatementSyntax>(tree.Root);
+        var root = Assert.IsType<UnaryExpressionSyntax>(rootStatement.Expression);
 
         var op = Assert.IsType<SyntaxToken>(root.OperatorToken);
         Assert.Equal(SyntaxKind.MinusToken, op.Kind);
@@ -103,7 +107,8 @@ public class ParserTests
 
         // Assert
         Assert.Empty(tree.Diagnostics);
-        var root = Assert.IsType<BinaryExpressionSyntax>(tree.Root);
+        var rootStatement = Assert.IsType<ExpressionStatementSyntax>(tree.Root);
+        var root = Assert.IsType<BinaryExpressionSyntax>(rootStatement.Expression);
 
         var left = Assert.IsType<LiteralExpressionSyntax>(root.Left);
         Assert.Equal(1.0d, left.LiteralToken.Value);

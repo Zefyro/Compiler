@@ -23,6 +23,10 @@ public class EvaluatorTests
     [InlineData("1 > 2", false)]
     [InlineData("1 <= 1", true)]
     [InlineData("1 >= 1", true)]
+    [InlineData("true == true", true)]
+    [InlineData("true == false", false)]
+    [InlineData("true != true", false)]
+    [InlineData("true != false", true)]
     public void Evaluator_Evaluates_Expression(string text, object expectedValue)
     {
         // Arrange
@@ -30,8 +34,8 @@ public class EvaluatorTests
         var diagnostics = new DiagnosticBag();
         var variables = new Dictionary<string, object>();
         var binder = new Binder(diagnostics, variables);
-        var boundExpression = binder.BindExpression(syntaxTree.Root);
-        var evaluator = new Evaluator(boundExpression, diagnostics, variables);
+        var boundStatement = binder.BindStatement(syntaxTree.Root);
+        var evaluator = new Evaluator(boundStatement, diagnostics, variables);
 
         // Act
         var result = evaluator.Evaluate();
@@ -50,8 +54,8 @@ public class EvaluatorTests
         var diagnostics = new DiagnosticBag();
         var variables = new Dictionary<string, object>();
         var binder = new Binder(diagnostics, variables);
-        var boundExpression = binder.BindExpression(syntaxTree.Root);
-        var evaluator = new Evaluator(boundExpression, diagnostics, variables);
+        var boundStatement = binder.BindStatement(syntaxTree.Root);
+        var evaluator = new Evaluator(boundStatement, diagnostics, variables);
 
         // Act
         var result = evaluator.Evaluate();
@@ -71,14 +75,14 @@ public class EvaluatorTests
         var diagnostics = new DiagnosticBag();
         var variables = new Dictionary<string, object>();
         var binder = new Binder(diagnostics, variables);
-        var boundExpression = binder.BindExpression(syntaxTree.Root);
-        var evaluator = new Evaluator(boundExpression, diagnostics, variables);
-        evaluator.Evaluate(); // Assign the variable
+        var boundStatement = binder.BindStatement(syntaxTree.Root);
+        var evaluator = new Evaluator(boundStatement, diagnostics, variables);
+        evaluator.Evaluate();
 
         var text2 = "a";
         var syntaxTree2 = SyntaxTree.Parse(text2);
-        var boundExpression2 = binder.BindExpression(syntaxTree2.Root);
-        var evaluator2 = new Evaluator(boundExpression2, diagnostics, variables);
+        var boundStatement2 = binder.BindStatement(syntaxTree2.Root);
+        var evaluator2 = new Evaluator(boundStatement2, diagnostics, variables);
 
         // Act
         var result = evaluator2.Evaluate();

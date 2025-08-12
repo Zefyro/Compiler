@@ -17,7 +17,7 @@ public class BinderTests
         var binder = new Binder(diagnostics, variables);
 
         // Act
-        var boundExpression = binder.BindExpression(syntaxTree.Root);
+        var boundExpression = binder.BindExpression(((ExpressionStatementSyntax)syntaxTree.Root).Expression);
 
         // Assert
         Assert.Empty(diagnostics.ToImmutableArray());
@@ -37,7 +37,7 @@ public class BinderTests
         var binder = new Binder(diagnostics, variables);
 
         // Act
-        var boundExpression = binder.BindExpression(syntaxTree.Root);
+        var boundExpression = binder.BindExpression(((ExpressionStatementSyntax)syntaxTree.Root).Expression);
 
         // Assert
         Assert.Empty(diagnostics.ToImmutableArray());
@@ -60,7 +60,7 @@ public class BinderTests
         var binder = new Binder(diagnostics, variables);
 
         // Act
-        var boundExpression = binder.BindExpression(syntaxTree.Root);
+        var boundExpression = binder.BindExpression(((ExpressionStatementSyntax)syntaxTree.Root).Expression);
 
         // Assert
         Assert.Empty(diagnostics.ToImmutableArray());
@@ -86,7 +86,7 @@ public class BinderTests
         var binder = new Binder(diagnostics, variables);
 
         // Act
-        var boundExpression = binder.BindExpression(syntaxTree.Root);
+        var boundExpression = binder.BindExpression(((ExpressionStatementSyntax)syntaxTree.Root).Expression);
 
         // Assert
         Assert.Empty(diagnostics.ToImmutableArray());
@@ -109,7 +109,7 @@ public class BinderTests
         var binder = new Binder(diagnostics, variables);
 
         // Act
-        var boundExpression = binder.BindExpression(syntaxTree.Root);
+        var boundExpression = binder.BindExpression(((ExpressionStatementSyntax)syntaxTree.Root).Expression);
 
         // Assert
         Assert.Empty(diagnostics.ToImmutableArray());
@@ -129,7 +129,7 @@ public class BinderTests
         var binder = new Binder(diagnostics, variables);
 
         // Act
-        var boundExpression = binder.BindExpression(syntaxTree.Root);
+        var boundExpression = binder.BindExpression(((ExpressionStatementSyntax)syntaxTree.Root).Expression);
 
         // Assert
         Assert.Empty(diagnostics.ToImmutableArray());

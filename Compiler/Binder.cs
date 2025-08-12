@@ -26,7 +26,7 @@ public sealed class Binder(DiagnosticBag diagnostics, Dictionary<string, object>
         }
     }
 
-    private BoundExpression BindExpression(ExpressionSyntax syntax)
+    public BoundExpression BindExpression(ExpressionSyntax syntax)
     {
         switch (syntax.Kind)
         {

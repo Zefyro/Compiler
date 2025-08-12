@@ -26,6 +26,8 @@ public class LexerTests
     [InlineData(";", SyntaxKind.EndOfExpressionToken, null)]
     [InlineData("abc", SyntaxKind.VariableToken, "abc")]
     [InlineData("_var", SyntaxKind.VariableToken, "_var")]
+    [InlineData("true", SyntaxKind.TrueKeyword, true)]
+    [InlineData("false", SyntaxKind.FalseKeyword, false)]
     [InlineData("  ", SyntaxKind.WhitespaceToken, null)]
     [InlineData("// comment", SyntaxKind.SlashSlashToken, null)]
     [InlineData("/* comment */", SyntaxKind.SlashStarToken, null)]
