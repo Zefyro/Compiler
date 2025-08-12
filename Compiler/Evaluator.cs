@@ -2,13 +2,60 @@ using Compiler.Binding;
 using Compiler.Diagnostics;
 
 namespace Compiler;
-public sealed class Evaluator(BoundExpression root, DiagnosticBag diagnostics, Dictionary<string, object> variables)
+public sealed class Evaluator(BoundStatement root, DiagnosticBag diagnostics, Dictionary<string, object> variables)
 {
-    private readonly BoundExpression _root = root;
+    private readonly BoundStatement _root = root;
     private readonly DiagnosticBag _diagnostics = diagnostics;
     private readonly Dictionary<string, object> _variables = variables;
 
-    public object Evaluate() => EvaluateExpression(_root);
+    public object Evaluate()
+    {
+        return EvaluateStatement(_root);
+    }
+
+    private object EvaluateStatement(BoundStatement node)
+    {
+        switch (node.Kind)
+        {
+            case BoundKind.BlockStatement:
+                return EvaluateBlockStatement((BoundBlockStatement)node);
+            case BoundKind.ExpressionStatement:
+                return EvaluateExpression(((BoundExpressionStatement)node).Expression);
+            case BoundKind.IfStatement:
+                return EvaluateIfStatement((BoundIfStatement)node);
+            case BoundKind.BadStatement:
+                _diagnostics.Report("Received a BadStatement");
+                return 0.0d;
+            default:
+                _diagnostics.Report($"Unexpected node {node.Kind}");
+                return 0.0d;
+        }
+    }
+
+    private object EvaluateBlockStatement(BoundBlockStatement node)
+    {
+        object? lastResult = null;
+        foreach (var statement in node.Statements)
+        {
+            lastResult = EvaluateStatement(statement);
+        }
+        return lastResult!;
+    }
+
+    private object EvaluateIfStatement(BoundIfStatement node)
+    {
+        var condition = (bool)EvaluateExpression(node.Condition);
+        if (condition)
+        {
+            return EvaluateStatement(node.ThenStatement);
+        }
+        else if (node.ElseStatement is not null)
+        {
+            return EvaluateStatement(node.ElseStatement);
+        }
+        return 0.0d; // TODO: smarter null handling
+    }
+
     private object EvaluateExpression(BoundExpression node)
     {
         if (node is BoundLiteralExpression n)

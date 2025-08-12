@@ -3,11 +3,15 @@ namespace Compiler.Binding;
 public enum BoundKind
 {
     BadExpression,
+    BadStatement,
     LiteralExpression,
     UnaryExpression,
     BinaryExpression,
     VariableExpression,
     AssignmentExpression,
+    BlockStatement,
+    IfStatement,
+    ExpressionStatement,
 
     // Unary Operators
     UnaryPlusExpression,

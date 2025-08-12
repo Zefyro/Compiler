@@ -51,7 +51,14 @@ public sealed class Lexer(string text) {
             
             int length = _position - start;
             string text = _text.Substring(start, length);
-            return new SyntaxToken(SyntaxKind.VariableToken, start, text, text);
+            SyntaxKind kind = SyntaxFacts.GetKeywordKind(text);
+            object? value = kind switch
+            {
+                SyntaxKind.TrueKeyword => true,
+                SyntaxKind.FalseKeyword => false,
+                _ => text
+            };
+            return new SyntaxToken(kind, start, text, value);
         }
         
         switch (Current)

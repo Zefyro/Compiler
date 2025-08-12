@@ -1,6 +1,7 @@
 using Compiler.Binding;
 using Compiler.Diagnostics;
 using Compiler.Syntax;
+using System.Collections.Immutable;
 
 namespace Compiler;
 
@@ -9,7 +10,23 @@ public sealed class Binder(DiagnosticBag diagnostics, Dictionary<string, object>
     private readonly DiagnosticBag _diagnostics = diagnostics;
     private readonly Dictionary<string, object> _variables = variables;
 
-    public BoundExpression BindExpression(ExpressionSyntax syntax)
+    public BoundStatement BindStatement(StatementSyntax syntax)
+    {
+        switch (syntax.Kind)
+        {
+            case SyntaxKind.BlockStatement:
+                return BindBlockStatement((BlockStatementSyntax)syntax);
+            case SyntaxKind.ExpressionStatement:
+                return BindExpressionStatement((ExpressionStatementSyntax)syntax);
+            case SyntaxKind.IfStatement:
+                return BindIfStatement((IfStatementSyntax)syntax);
+            default:
+                _diagnostics.Report($"Unexpected syntax {syntax.Kind}");
+                return new BoundBadStatement();
+        }
+    }
+
+    private BoundExpression BindExpression(ExpressionSyntax syntax)
     {
         switch (syntax.Kind)
         {
@@ -33,8 +50,8 @@ public sealed class Binder(DiagnosticBag diagnostics, Dictionary<string, object>
 
     private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
     {
-        var value = syntax.LiteralToken.Value ?? 0; // Default to 0 if null
-        return new BoundLiteralExpression(value);
+        var value = syntax.LiteralToken.Value;
+        return new BoundLiteralExpression(value!);
     }
 
     private BoundExpression BindBinaryExpression(BinaryExpressionSyntax syntax)
@@ -85,5 +102,36 @@ public sealed class Binder(DiagnosticBag diagnostics, Dictionary<string, object>
     {
         var boundExpression = BindExpression(syntax.Expression);
         return new BoundAssignmentExpression(syntax.VariableToken.Text!, boundExpression, boundExpression.Type);
+    }
+
+    private BoundStatement BindExpressionStatement(ExpressionStatementSyntax syntax)
+    {
+        var boundExpression = BindExpression(syntax.Expression);
+        return new BoundExpressionStatement(boundExpression);
+    }
+
+    private BoundStatement BindBlockStatement(BlockStatementSyntax syntax)
+    {
+        var statements = ImmutableArray.CreateBuilder<BoundStatement>();
+        foreach (var statementSyntax in syntax.Statements)
+        {
+            var boundStatement = BindStatement(statementSyntax);
+            statements.Add(boundStatement);
+        }
+        return new BoundBlockStatement(statements.ToImmutable());
+    }
+
+    private BoundStatement BindIfStatement(IfStatementSyntax syntax)
+    {
+        var boundCondition = BindExpression(syntax.Condition);
+        var boundThenStatement = BindStatement(syntax.ThenStatement);
+        var boundElseStatement = syntax.ElseClause is null ? null : BindStatement(syntax.ElseClause.ElseStatement);
+
+        if (boundCondition.Type != typeof(bool))
+        {
+            _diagnostics.Report($"Condition of type '{boundCondition.Type}' cannot be converted to 'System.Boolean'");
+        }
+
+        return new BoundIfStatement(boundCondition, boundThenStatement, boundElseStatement);
     }
 }

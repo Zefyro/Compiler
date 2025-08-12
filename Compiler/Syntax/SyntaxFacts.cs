@@ -16,4 +16,16 @@ public static class SyntaxFacts {
             _ => 0,
         };
     }
+
+    public static SyntaxKind GetKeywordKind(string text)
+    {
+        return text switch
+        {
+            "if" => SyntaxKind.IfKeyword,
+            "else" => SyntaxKind.ElseKeyword,
+            "true" => SyntaxKind.TrueKeyword,
+            "false" => SyntaxKind.FalseKeyword,
+            _ => SyntaxKind.VariableToken,
+        };
+    }
 }

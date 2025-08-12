@@ -2,20 +2,12 @@ using Compiler.Syntax;
 
 namespace Compiler.Binding;
 
-public sealed class BoundUnaryOperator
+public sealed class BoundUnaryOperator(SyntaxKind syntaxKind, BoundKind kind, Type operandType, Type resultType)
 {
-    private BoundUnaryOperator(SyntaxKind syntaxKind, BoundKind kind, Type operandType, Type resultType)
-    {
-        SyntaxKind = syntaxKind;
-        Kind = kind;
-        OperandType = operandType;
-        ResultType = resultType;
-    }
-
-    public SyntaxKind SyntaxKind { get; }
-    public BoundKind Kind { get; }
-    public Type OperandType { get; }
-    public Type ResultType { get; }
+    public SyntaxKind SyntaxKind { get; } = syntaxKind;
+    public BoundKind Kind { get; } = kind;
+    public Type OperandType { get; } = operandType;
+    public Type ResultType { get; } = resultType;
 
     private static readonly BoundUnaryOperator[] _operators = [
         new(SyntaxKind.PlusToken, BoundKind.UnaryPlusExpression, typeof(double), typeof(double)),

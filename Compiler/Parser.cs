@@ -1,4 +1,5 @@
 using Compiler.Syntax;
+using System.Collections.Immutable;
 
 namespace Compiler;
 public sealed class Parser {
@@ -41,10 +42,69 @@ public sealed class Parser {
         return new SyntaxToken(kind, Current.Position, null, null);
     }
     public SyntaxTree Parse() {
-        ExpressionSyntax expression = ParseExpression();
+        StatementSyntax statement = ParseStatement();
         SyntaxToken endOfFileToken = Match(SyntaxKind.EndOfFileToken);
-        return new SyntaxTree(_diagnostics, expression, endOfFileToken);
+        return new SyntaxTree(_diagnostics, statement, endOfFileToken);
     }
+
+    private StatementSyntax ParseStatement()
+    {
+        switch (Current.Kind)
+        {
+            case SyntaxKind.OpenBraceToken:
+                return ParseBlockStatement();
+            case SyntaxKind.IfKeyword:
+                return ParseIfStatement();
+            default:
+                return ParseExpressionStatement();
+        }
+    }
+
+    private StatementSyntax ParseExpressionStatement()
+    {
+        var expression = ParseExpression();
+        return new ExpressionStatementSyntax(expression);
+    }
+
+    private StatementSyntax ParseBlockStatement()
+    {
+        var openBraceToken = Match(SyntaxKind.OpenBraceToken);
+        var statements = new List<StatementSyntax>();
+
+        while (Current.Kind != SyntaxKind.CloseBraceToken &&
+               Current.Kind != SyntaxKind.EndOfFileToken)
+        {
+            var statement = ParseStatement();
+            statements.Add(statement);
+        }
+
+        var closeBraceToken = Match(SyntaxKind.CloseBraceToken);
+        return new BlockStatementSyntax(openBraceToken, statements.ToImmutableArray(), closeBraceToken);
+    }
+
+    private StatementSyntax ParseIfStatement()
+    {
+        var ifKeyword = Match(SyntaxKind.IfKeyword);
+        var openParenthesisToken = Match(SyntaxKind.OpenParenthesisToken);
+        var condition = ParseExpression();
+        var closeParenthesisToken = Match(SyntaxKind.CloseParenthesisToken);
+        var thenStatement = ParseStatement();
+        var elseClause = ParseElseClause();
+
+        return new IfStatementSyntax(ifKeyword, condition, thenStatement, elseClause);
+    }
+
+    private ElseClauseSyntax? ParseElseClause()
+    {
+        if (Current.Kind == SyntaxKind.ElseKeyword)
+        {
+            var elseKeyword = Next();
+            var elseStatement = ParseStatement();
+            return new ElseClauseSyntax(elseKeyword, elseStatement);
+        }
+        return null;
+    }
+
     private ExpressionSyntax ParseExpression() {
         return ParseAssignmentExpression();
     }
@@ -92,6 +152,11 @@ public sealed class Parser {
             case SyntaxKind.VariableToken:
                 SyntaxToken variableToken = Next();
                 return new VariableExpressionSyntax(variableToken);
+
+            case SyntaxKind.TrueKeyword:
+            case SyntaxKind.FalseKeyword:
+                SyntaxToken booleanToken = Next();
+                return new LiteralExpressionSyntax(booleanToken);
 
             default:
                 SyntaxToken literalToken = Match(SyntaxKind.NumberToken);

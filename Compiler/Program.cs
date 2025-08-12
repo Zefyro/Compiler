@@ -64,16 +64,16 @@ public static class Program {
             if (!diagnostics.ToImmutableArray().Any())
             {
                 var binder = new Binder(diagnostics, Variables);
-                var boundExpression = binder.BindExpression(syntaxTree.Root);
+                var boundStatement = binder.BindStatement(syntaxTree.Root);
                 if (print_tree)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("[Bound Nodes]");
                     Console.ForegroundColor = ConsoleColor.DarkGray;
-                    PrettyPrintBoundNode(boundExpression);
+                    PrettyPrintBoundNode(boundStatement);
                     Console.ForegroundColor = color;
                 }
-                Evaluator evaluator = new(boundExpression, diagnostics, Variables);
+                Evaluator evaluator = new(boundStatement, diagnostics, Variables);
                 object result = evaluator.Evaluate();
 
                 if (diagnostics.ToImmutableArray().Any())

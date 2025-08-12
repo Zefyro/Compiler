@@ -15,6 +15,8 @@ public enum SyntaxKind {
     SlashSlashToken,
     SlashStarToken,
     EqualsToken,
+    OpenBraceToken,
+    CloseBraceToken,
     //PlusEqualsToken,
     //MinusEqualsToken,
     //StarEqualsToken,
@@ -22,11 +24,22 @@ public enum SyntaxKind {
     LessthanToken,
     MorethanToken,
     EqualsEqualsToken,
-    BangEqualsToken, // Added
+    BangEqualsToken,
     LessthanEqualsToken,
     MorethanEqualsToken,
     EndOfExpressionToken,
     VariableToken,
+
+    // Keywords
+    ElseKeyword,
+    IfKeyword,
+    FalseKeyword,
+    TrueKeyword,
+
+    // Nodes
+    BlockStatement,
+    ElseClause,
+    IfStatement,
 
     // Expressions
     AssignmentExpression,
@@ -35,4 +48,5 @@ public enum SyntaxKind {
     ParenthesizedExpression,
     LiteralExpression,
     VariableExpression,
+    ExpressionStatement,
 }
